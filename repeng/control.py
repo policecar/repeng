@@ -4,6 +4,7 @@ import warnings
 
 import torch
 from transformers import PretrainedConfig, PreTrainedModel
+from transformers.generation.utils import GenerationConfig, Cache
 
 if typing.TYPE_CHECKING:
     from .extract import ControlVector
@@ -117,6 +118,22 @@ class ControlModel(torch.nn.Module):
         return self.model.forward(*args, **kwargs)
 
     def generate(self, *args, **kwargs):
+        # Convert legacy cache to new Cache format if necessary
+        if "past_key_values" in kwargs and not isinstance(
+            kwargs["past_key_values"], Cache
+        ):
+            kwargs["past_key_values"] = Cache.from_legacy_cache(
+                kwargs["past_key_values"]
+            )
+
+        # Ensure generation config is properly set
+        if "generation_config" in kwargs:
+            if not isinstance(kwargs["generation_config"], GenerationConfig):
+                kwargs["generation_config"] = GenerationConfig(
+                    **kwargs["generation_config"]
+                )
+            kwargs["generation_config"].use_cache = True
+
         return self.model.generate(*args, **kwargs)
 
     def __call__(self, *args, **kwargs):
