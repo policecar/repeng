@@ -8,6 +8,25 @@
 A Python library for generating control vectors with representation engineering.
 Train a vector in less than sixty seconds!
 
+
+### Installation
+
+```
+conda create --name repeng python=3.11
+conda activate repeng
+pip install -U pip
+pip install -e .
+```
+
+To run the notebooks, additionaly run
+```
+pip install jupyterlab
+pip install ipywidgets
+```
+
+
+### Usage
+
 _For a full example, see the notebooks folder or [the blog post](https://vgel.me/posts/representation-engineering)._
 
 ```python
